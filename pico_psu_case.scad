@@ -1,3 +1,8 @@
+/* 
+  To change screw hole size, modify the diameter and positions
+  in the `screw_holes` module.
+*/
+
 housing_length = 25.5;
 housing_width = 56;
 
@@ -11,7 +16,7 @@ module cooling_grille(len, number) {
   }
 }
 
-module screw_hole(h=10, hole_d=2.5) {
+module screw_hole(h, hole_d) {
   difference() {
     cylinder(d=hole_d*3, h=h, $fn=8);
     translate([0,-hole_d*1.5,0]) cube([hole_d*3,hole_d*3,h]);
@@ -26,11 +31,27 @@ module top_edge_cutouts(dia, number) {
   }
 }
 
+module screw_holes(housing_height) {
+  // For 2.5mm holes
+  screw_hole_diameter = 2.5;
+  translate([-1.0,4.75,0]) screw_hole(h=housing_height, hole_d=screw_hole_diameter);
+  translate([55.0,4.75,0]) rotate([0,0,180]) screw_hole(h=housing_height, hole_d=screw_hole_diameter);
+  translate([51.3,26.5,0]) rotate([0,0,270]) screw_hole(h=housing_height, hole_d=screw_hole_diameter);
+  translate([2.7,26.5,0]) rotate([0,0,270]) screw_hole(h=housing_height, hole_d=screw_hole_diameter);
+
+  // // for 3.5mm hiles
+  // screw_hole_diameter = 3.5;
+  // translate([-1.0,6.25,0]) screw_hole(h=housing_height, hole_d=screw_hole_diameter);
+  // translate([55.0,6.25,0]) rotate([0,0,180]) screw_hole(h=housing_height, hole_d=screw_hole_diameter);
+  // translate([49.75,26.5,0]) rotate([0,0,270]) screw_hole(h=housing_height, hole_d=screw_hole_diameter);
+  // translate([4.25,26.5,0]) rotate([0,0,270]) screw_hole(h=housing_height, hole_d=screw_hole_diameter);
+}
+
 module side_a() {
   housing_height = 6;
 
   module pw_in_atx() {
-    // way larger than expected so you can thread the power connector through.
+    // larger than expected so you can put the power connector through.
     cube([18,12.5,10]);
   }
 
@@ -53,17 +74,13 @@ module side_a() {
       translate([34,4.5,housing_height-1]) cooling_grille(20.5,2);
       translate([40,4.5,housing_height-1]) cooling_grille(13.5,5);
 
-      // top edge cutouts
       translate([8,housing_length+2,housing_height/2]) {
         top_edge_cutouts(housing_height/2, 8);
       }
     }
   }
 
-  translate([-1.0,4.75,0]) screw_hole(h=housing_height);
-  translate([55.0,4.75,0]) rotate([0,0,180]) screw_hole(h=housing_height);
-  translate([51.3,26.5,0]) rotate([0,0,270]) screw_hole(h=housing_height);
-  translate([2.7,26.5,0]) rotate([0,0,270]) screw_hole(h=housing_height);
+  screw_holes(housing_height);
 }
 
 module side_b() {
@@ -77,7 +94,7 @@ module side_b() {
       translate([0,17,0]) hdd_connector();
       translate([0.5,4.5,housing_height-1]) cooling_grille(11,5);
       translate([15.5,4.5,housing_height-1]) cooling_grille(20,13);
-      // top edge cutouts
+
       translate([9.5,housing_length+2,housing_height/2]) {
         top_edge_cutouts(housing_height/2, 5);
       }
@@ -85,15 +102,11 @@ module side_b() {
     }
   }
 
-  translate([-1.0,4.75,0]) screw_hole(h=housing_height);
-  translate([55.0,4.75,0]) rotate([0,0,180]) screw_hole(h=housing_height);
-  // translate([55.0,23.5,0]) rotate([0,0,180]) screw_hole(h=housing_height);
-  translate([51.3,26.5,0]) rotate([0,0,270]) screw_hole(h=housing_height);
-  translate([2.7,26.5,0]) rotate([0,0,270]) screw_hole(h=housing_height);
+  screw_holes(housing_height);
 }
 
-// rotate([180,0,0])
+translate([0,housing_length/10,0])
   side_a();
 
-// rotate([180,0,0])
-//  side_b();
+translate([0,-housing_length*1.4,0])
+ side_b();
